@@ -11,3 +11,36 @@
       }
   }
 }
+
+/* styles.scss o tu archivo CSS */
+.custom-button {
+  background-color: rgb(202, 199, 199); /* Cambia el color de fondo según tus preferencias */
+}
+
+/* styles.scss o tu archivo CSS */
+.custom-card {
+  border: 1px solid #ccc;
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    padding: 1rem;
+}
+.cards{
+  padding-left: 2px;
+  padding-right: 2px;
+  border: 1px solid #ccc;
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+}
+
+.custom-button {
+  background-color: rgb(202, 199, 199); /* Cambia el color de fondo según tus preferencias */
+}
+
+.cards {
+  padding: 0.5rem; /* Ajusta el espaciado interno de los KPIs según tus necesidades */
+  /* Otros estilos para los KPIs */
+  max-width: 120px;
+}
+p-dropdown{
+  padding: 0.5rem;
+}

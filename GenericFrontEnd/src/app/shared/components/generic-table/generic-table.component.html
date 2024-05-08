@@ -1,46 +1,65 @@
-
-<p-table 
-    #table 
-    [value]="data" 
-    [loading]="loading"
-    dataKey="id"
-    [rows]="10"
-    [rowsPerPageOptions]="[10, 25, 50]"
-    [paginator]="true"  
-    [globalFilterFields]="['name', 'country.name', 'representative.name', 'status']"  
-    >
-    <ng-template pTemplate="caption">
-        <div class="flex row align-items-center" style="text-align: center !important; padding: .5rem;">           
-            <div class="col-md-auto">
-              <span class="p-input-icon-left">
-                <input #searchInput pInputText type="text" (input)="table.filterGlobal(searchInput.value, 'contains')" placeholder="Search keyword" />
-              </span>
-            </div>            
-          </div>
-          <div class="col-md-auto">
-            <button type="button" pButton icon="pi pi-filter-slash" (click)="clear(table,searchInput)" class="ml-auto mr-1 px-4 py-1 jbl-blue" style="color: rgb(255, 255, 255)" pTooltip="CSV" tooltipPosition="bottom"></button>
-          </div>
-    </ng-template>
-    <ng-template pTemplate="header">
-        <tr>
-            <th style="min-width:15rem" *ngFor="let col of columns">
-                <div class="flex align-items-center">
-                {{ col.header }}
-                <p-columnFilter type="text" [field]="col.field" [display]="col.header" />
+<div class="card custom-card">
+    <p-table 
+        #table 
+        [value]="theTable.data" 
+        [loading]="loading"
+        [dataKey]="theTable.dataKey"
+        [rows]="theTable.rowsPerPage"
+        [rowsPerPageOptions]="theTable.rowsPerPageOptions"
+        [paginator]="true"  
+        [globalFilterFields]="theTable.globalFilterFields"  
+        >
+        <ng-template pTemplate="caption">
+            <div class="flex ">              
+                    <div class="cards flex-1 mx-1 text-center border-round" *ngFor="let kpi of theTable.kpi">
+                        <shared-basic-kpi [title]="kpi.title" [total]="kpi.total"></shared-basic-kpi>
+                    </div>
+              
+                    <div class="ml-auto">                    
+                        <input #searchInput pInputText type="text" (input)="table.filterGlobal(searchInput.value, 'contains')" placeholder="Search keyword" />
+                        <button type="button" pButton icon="pi pi-filter-slash" (click)="clear(table,searchInput)" class="ml-1 px-4 py-1 custom-button" style="color: rgb(255, 255, 255)" pTooltip="CSV" tooltipPosition="bottom"></button>
+                        <button type="button" pButton icon="pi pi-download" (click)="exportToCSV()" class="ml-1 px-4 py-1 custom-button" pTooltip="CSV" tooltipPosition="bottom"></button>
+                        @if (showDetails) {
+                            <button type="button" pButton icon="pi pi-plus" (click)="show()" class="ml-1 px-4 py-1 custom-button" pTooltip="Add" tooltipPosition="bottom"></button>
+                        }                                     
+                    </div>
+            </div>
+            <div class="d-flex align-items-center" style="padding: .5rem;">
+                <!-- KPIs -->
+                <div class="d-flex">
+                    
                 </div>
-            </th>
-        </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-rowData >
-        <tr>
-            <td *ngFor="let col of columns">
-                {{ rowData[col.field] }}
-            </td>
-        </tr>
-    </ng-template>
-    <ng-template pTemplate="emptymessage">
-        <tr>
-            <td>No data found.</td>
-        </tr>
-    </ng-template>
-</p-table>
+        
+                <!-- Search keyword input and buttons -->
+               
+            </div>
+        </ng-template>
+        
+        
+        
+        
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="min-width:15rem" *ngFor="let col of theTable.columns">
+                    <div class="flex align-items-center">
+                    {{ col.header }}
+                    <p-columnFilter type="text" [field]="col.field" [display]="col.header" />
+                    </div>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData >
+            <tr>
+                <td *ngFor="let col of theTable.columns">
+                    {{ rowData[col.field] }}
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td>No data found.</td>
+            </tr>
+        </ng-template>
+    </p-table>
+
+</div>

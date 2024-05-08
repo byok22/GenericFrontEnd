@@ -1,33 +1,59 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { PrimengModule } from '../../modules/primeng.module';
-import { TableData } from './interfaces/table-data';
-import { TableColumn } from './interfaces/table-column';
-import { TableFilter } from './interfaces/table-filter';
 import { Table } from 'primeng/table';
 import { timer } from 'rxjs';
+import { GenericTableConfig } from './interfaces/generic-table-config';
+import { BasicKpiComponent } from '../basic-kpi/basic-kpi.component';
+import { ExportToFormatService } from '../../services/export-to-format.service.service';
 
 @Component({
   selector: 'generic-table',
   standalone: true,
   imports: [
     CommonModule,
-    PrimengModule
+    PrimengModule,
+    BasicKpiComponent
   ],
   templateUrl: './generic-table.component.html',
   styleUrl: './generic-table.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GenericTableComponent implements OnInit {
-  @Input() data: TableData[] = [];
-  @Input() columns: TableColumn[] = [];
-  @Input() filters: TableFilter[] = [];
+export class GenericTableComponent<T extends Object> implements OnInit {
+  @Input() theTable!: GenericTableConfig<T>; 
   searchValue: string | undefined;
   loading: boolean = true;
   @ViewChild('table') table!: Table;
 
+  //For Add
+  @Input()
+  showDetails?: boolean = true;
 
-  constructor() {}
+  //Emit the row
+  @Output()
+  public output = new EventEmitter<T>();
+
+
+  //Show the row detais
+  show(row: T = {} as T) {
+    //this.loading = true;
+    try {
+      const rowObject: T = { ...row };
+      this.output.emit(rowObject);
+    } catch (error) {
+      console.error('show: ', error);
+    }
+    // Agregar un retraso antes de establecer loading en false
+    timer(500).subscribe(() => {
+      this.loading = false;
+    });
+  }
+
+
+
+  constructor(
+    private exportToFormatService: ExportToFormatService,
+  ) {}
 
   ngOnInit() {
       // Puedes agregar lógica de inicialización aquí si es necesario
@@ -50,6 +76,10 @@ export class GenericTableComponent implements OnInit {
      // this.loading = true;
      // this.loading = false;
     });
+  }
+  exportToCSV(): void {
+    //call to Service
+    this.exportToFormatService.exportToCSV(this.theTable.data);
   }
  
 
