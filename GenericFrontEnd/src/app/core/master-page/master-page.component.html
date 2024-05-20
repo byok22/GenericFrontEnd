@@ -1,2 +1,4 @@
 <p>master-page works!</p>
+<app-generic-menu [menuItems]="menuItems"></app-generic-menu>
 <generic-table [theTable]="tableConfig"></generic-table>
+<select-dropdown [label]="'pruebaLabel'" [options]="selectDePrueba" [selectedOption]="selectedOption" (onChange)="selectedOption = $event"></select-dropdown>
