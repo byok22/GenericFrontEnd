@@ -1,0 +1,17 @@
+<form [formGroup]="customForm">
+<div class="form-group col-md-12">
+    <label class="labelsMenu" for="{{field.field}}">{{field.label}}</label>
+    <input
+      type="{{field.type}}"
+      id="{{field.field}}"
+      class="form-control"
+      formControlName="{{field.field}}"
+      required = "{{field.required}}"
+      [readonly] = "field.enable==false?true:false"
+     
+    />
+    <!-- Display error message -->
+    <div class="errors" *ngIf="hasError(field.field, 'required')">{{field.label}} is required.</div>
+
+  </div>
+</form>

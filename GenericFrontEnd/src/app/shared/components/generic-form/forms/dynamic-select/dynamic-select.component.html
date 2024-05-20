@@ -1,0 +1,10 @@
+<form [formGroup]="customForm">
+    <div class="form-group col-md-12">
+        <label class="labelsMenu" for="{{field.field}}">{{field.label}}</label>
+        <select class="form-control" [formControlName]="field.field">
+            <option *ngFor="let option of field.options" [value]="option.id" [selected]="option.id === field.value">{{ option.text }}</option>
+        </select>
+        <!-- Display error message -->
+        <div class="errors" *ngIf="hasError(field.field, 'required')">{{field.field}} is required.</div>
+    </div>
+</form>

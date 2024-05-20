@@ -1,0 +1,18 @@
+
+<ng-container #dynamicInputContainer>
+
+</ng-container>
+
+<!--Buttons For Submit-->
+<div class="form-group">
+    <div class="row botons">
+      <div class="col-md-9">
+        <button type="submit" class="btn btn-primary" (click)="onSubmit()">
+          {{  genericForm.editAdd !== 'Add' ? 'Save Changes' : 'Add New' }}
+        </button>
+      </div>
+      <div class="col-md-3">
+        <button type="button" class="btn btn-danger" *ngIf="genericForm.editAdd === 'Add' " (click)="clearForm()">Clear</button>
+      </div>
+    </div>
+  </div>
