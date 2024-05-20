@@ -1,0 +1,23 @@
+<div class="row menu m-0 menu">
+    <ng-container *ngFor="let item of menuItems">
+      <div class="col-lg-1 col-md-2 columns1" [ngSwitch]="item.type">
+        <ng-container *ngSwitchCase="'dropdown'">
+          <select-dropdown [label]="item.labelText" [options]="item.item.options" (onChange)="item.item.onChange($event)" [selectedOption]="item.item.selectedOption"></select-dropdown>
+        </ng-container>
+        <ng-container *ngSwitchCase="'multi-select'">
+          <multi-select-dropdown [label]="item.labelText" [options]="item.item.options" (onChange)="item.item.onChange($event)" (onModelChange)="item.item.onModelChange($event)"></multi-select-dropdown>
+        </ng-container>
+        <ng-container *ngSwitchCase="'calendar'">
+          <label class="labelsMenu">{{ item.labelText }}</label>
+          <p-calendar [(ngModel)]="item.item.model" [showIcon]="true" [showTime]="true" [showSeconds]="true" (onSelect)="item.item.onSelect($event)"></p-calendar>
+        </ng-container>
+        <ng-container *ngSwitchCase="'button'">
+          <button id="buttons" class="btn btn-primary btn-block" (click)="item.item.onClick()">{{ item.labelText }}</button>
+        </ng-container>
+        <ng-container *ngSwitchDefault>
+          <p>{{ item.labelText }}</p>
+        </ng-container>
+      </div>
+    </ng-container>
+  </div>
+  

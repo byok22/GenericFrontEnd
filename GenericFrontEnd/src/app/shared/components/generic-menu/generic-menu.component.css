@@ -1,0 +1,23 @@
+:host {
+  display: block;
+}
+.menu {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.columns1 {
+  padding: 5px;
+}
+
+.labelsMenu {
+  font-weight: bold;
+}
+
+.selects {
+  width: 100%;
+}
+
+.btn-block {
+  width: 100%;
+}
