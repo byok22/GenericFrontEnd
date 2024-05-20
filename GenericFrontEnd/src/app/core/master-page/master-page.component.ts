@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {  Component, OnInit  } from '@angular/core';
+import {  Component, OnInit, signal  } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { TableColumn } from '../../shared/components/generic-table/interfaces/table-column';
 import { GenericTableComponent } from '../../shared/components/generic-table/generic-table.component';
@@ -12,37 +12,61 @@ import { GenericMenuConcreteBuilder } from '../../shared/components/generic-menu
 import { GenericMenuComponent } from '../../shared/components/generic-menu/generic-menu.component';
 import { SelectOption } from '../../shared/interfaces/select-option.interface';
 import { SelectDropdownComponent } from '../../shared/components/select-dropdown/select-dropdown.component';
+import { GenericFormInterface } from '../../shared/components/generic-form/generic-form.interface';
+import { PrimengModule } from '../../shared/modules/primeng.module';
+import { GenericFormComponent } from '../../shared/components/generic-form/generic-form.component';
+import { GenericFormConcretBuilder } from '../../shared/components/generic-form/builder/generic-form-concret-builder';
+import { text } from 'stream/consumers';
+import { FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-master-page',
   standalone: true,
   imports: [
-    CommonModule,RouterOutlet, GenericTableComponent, GenericMenuComponent, SelectDropdownComponent
+    CommonModule,RouterOutlet, GenericTableComponent, GenericMenuComponent, SelectDropdownComponent, PrimengModule, GenericFormComponent
   ],
   templateUrl: './master-page.component.html',
   styleUrl: './master-page.component.css'
 })
 export class MasterPageComponent implements OnInit  {
 
+
   /**
    *
    */
-  tableConfig!: GenericTableConfig<TestInterface>;
-  menuItems: GenericMenuInterface[] = [];
-  selectDePrueba: SelectOption[]=[
-    { id:'1',
-      text:'Customer 1'
-    },
-    { id:'2',
-      text:'Customer 2'
-    },
+  //Page Config
+  //For Knwon if the form is Edit o ADD  
+  public EditAdd = signal<string>('');
+  public displayMaximizable: boolean = false;  
 
-  ]
-  selectedOption: SelectOption = { id:'2',
-      text:'Customer 2'
-    };
+  public dataTest =signal<TestInterface>
+  (
+    {
+
+    id: 1, name: 'John', age: 30
+   }   
+  ) ;
+  //Reviso si se hace un submit
+  public submit = signal(false); 
+
+  //Table
+  tableConfig!: GenericTableConfig<TestInterface>;
+   
+  //Menu
+  menuItems: GenericMenuInterface[] = [];  
+  //Formulario
+  genericForm:GenericFormInterface<TestInterface>={
+    tittle: '',
+    fields: [],
+    customFromGroup: undefined,
+    editAdd: '',
+    data:this.dataTest()
+  };
+   
  // columnFields?: string[] ;
-  constructor(private serviceTable: TableBuilderFactoryService) {
+  constructor(private serviceTable: TableBuilderFactoryService,
+    private fb: FormBuilder
+  ) {
   
     
   }
@@ -50,9 +74,72 @@ export class MasterPageComponent implements OnInit  {
   ngOnInit(): void{
     this.ConfigTable();
     this.ConfigMenu();
+   // this.ConfigForm();
     
 
   }
+  //#region Config Form
+  ConfigForm() {
+  
+    const builder = new GenericFormConcretBuilder<TestInterface>();
+    builder.Reset();
+    builder.SetEditAdd(this.EditAdd.toString());
+    
+    builder.SetField({
+      field:'id',
+      label:'id',
+      order:1,
+      required:true,
+      type:'text',
+      validationRequired:true,
+      enable:true,
+      show:true,
+      value:this.dataTest().id
+
+    });
+    builder.SetField({
+      field:'age',
+      label:'age',
+      order:3,
+      required:true,
+      type:'text',
+      validationRequired:true,
+      enable:true,
+      show:true,
+      value:this.dataTest().age
+
+    });
+    builder.SetField({
+      field:'name',
+      label:'name',
+      order:2,
+      required:true,
+      type:'text',
+      validationRequired:true,
+      enable:true,
+      show:true,
+      value:this.dataTest().name
+
+    });
+    builder.SetFormGroup(
+      this.fb.group({
+        id:[0],
+        age:[0],
+        name:['']
+        
+      })
+    );
+    builder.SetSubmitFunction(
+      ()=>{
+        console.log('Se hizo Submit');
+        this.displayMaximizable = false;
+      }
+    );
+    builder.SetTitle('Test Prueba');
+    this.genericForm = builder.Generate();
+  }
+  //#endregion
+
   //#region Config Table
   ConfigTable():void{
     const builder = this.serviceTable.createBuilder<TestInterface>();
@@ -72,6 +159,36 @@ export class MasterPageComponent implements OnInit  {
     this.tableConfig = builder.Generate();
 
   }
+  getModal(item: TestInterface = {} as TestInterface) {
+    
+    this.submit.set(false) ;
+
+   
+    //Put Header in Modal
+    if(item.id==0|| item.id == undefined){
+      this.EditAdd.set('Add')
+    }else{
+      this.EditAdd.set('Edit')
+    }
+
+    //Show Modal
+    this.displayMaximizable = true;
+    //Use Selected Object
+    if(this.EditAdd()=='Edit')
+    {
+      this.dataTest.set(item);
+    }else{
+
+      const dataTestTemp: TestInterface ={
+        id: 1, name: 'John', age: 30  
+      }
+     
+
+      this.dataTest.set(dataTestTemp);
+    }
+    this.ConfigForm();
+  }
+
   GetData(): TestInterface[] {
     return [
       { id: 1, name: 'John', age: 30 },
@@ -95,6 +212,10 @@ export class MasterPageComponent implements OnInit  {
         header: columnNames[index]
       };    
   });
+}
+capitalizeFirstLetter(word: string): string {
+  if (!word) return word;
+  return word[0].toUpperCase() + word.substr(1).toLowerCase();
 }
   //#endregion
   //#region  ConfigMenu
@@ -166,9 +287,6 @@ export class MasterPageComponent implements OnInit  {
    
 
   
-   capitalizeFirstLetter(word: string): string {
-        if (!word) return word;
-        return word[0].toUpperCase() + word.substr(1).toLowerCase();
-    }
+   
 
  }
