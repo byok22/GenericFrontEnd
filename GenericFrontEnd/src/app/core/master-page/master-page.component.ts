@@ -16,7 +16,6 @@ import { GenericFormInterface } from '../../shared/components/generic-form/gener
 import { PrimengModule } from '../../shared/modules/primeng.module';
 import { GenericFormComponent } from '../../shared/components/generic-form/generic-form.component';
 import { GenericFormConcretBuilder } from '../../shared/components/generic-form/builder/generic-form-concret-builder';
-import { text } from 'stream/consumers';
 import { FormBuilder } from '@angular/forms';
 
 @Component({
@@ -88,7 +87,7 @@ export class MasterPageComponent implements OnInit  {
     builder.SetField({
       field:'id',
       label:'id',
-      order:1,
+      order:2,
       required:true,
       type:'text',
       validationRequired:true,
@@ -100,7 +99,7 @@ export class MasterPageComponent implements OnInit  {
     builder.SetField({
       field:'age',
       label:'age',
-      order:3,
+      order:1,
       required:true,
       type:'text',
       validationRequired:true,
@@ -112,7 +111,7 @@ export class MasterPageComponent implements OnInit  {
     builder.SetField({
       field:'name',
       label:'name',
-      order:2,
+      order:3,
       required:true,
       type:'text',
       validationRequired:true,
