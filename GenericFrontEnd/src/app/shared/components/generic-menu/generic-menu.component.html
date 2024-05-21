@@ -1,6 +1,7 @@
-<div class="row menu m-0 menu">
+<div class="card">
+  <div class="row menu m-0 menu">
     <ng-container *ngFor="let item of menuItems">
-      <div class="col-lg-1 col-md-2 columns1" [ngSwitch]="item.type">
+      <div class="col-lg-1 col-md-2 menuItems" [ngSwitch]="item.type">
         <ng-container *ngSwitchCase="'dropdown'">
           <select-dropdown [label]="item.labelText" [options]="item.item.options" (onChange)="item.item.onChange($event)" [selectedOption]="item.item.selectedOption"></select-dropdown>
         </ng-container>
@@ -8,8 +9,13 @@
           <multi-select-dropdown [label]="item.labelText" [options]="item.item.options" (onChange)="item.item.onChange($event)" (onModelChange)="item.item.onModelChange($event)"></multi-select-dropdown>
         </ng-container>
         <ng-container *ngSwitchCase="'calendar'">
-          <label class="labelsMenu">{{ item.labelText }}</label>
-          <p-calendar [(ngModel)]="item.item.model" [showIcon]="true" [showTime]="true" [showSeconds]="true" (onSelect)="item.item.onSelect($event)"></p-calendar>
+          <label  styleClass="genericLabel">{{ item.labelText }}</label>
+          <p-calendar styleClass="custom-calendar" 
+              dateFormat="dd.mm.yy" 
+              [(ngModel)]="item.item.model" [showIcon]="true" (onSelect)="item.item.onSelect($event)"></p-calendar>
+          <!-- <p-calendar styleClass="custom-calendar" 
+              dateFormat="dd.mm.yy" 
+              [(ngModel)]="item.item.model" [showIcon]="true" [showTime]="true" [showSeconds]="true" (onSelect)="item.item.onSelect($event)"></p-calendar> -->
         </ng-container>
         <ng-container *ngSwitchCase="'button'">
           <button id="buttons" class="btn btn-primary btn-block" (click)="item.item.onClick()">{{ item.labelText }}</button>
@@ -20,4 +26,6 @@
       </div>
     </ng-container>
   </div>
+</div>
+
   
