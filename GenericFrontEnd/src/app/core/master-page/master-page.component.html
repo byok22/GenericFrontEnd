@@ -1,6 +1,5 @@
 <p>master-page works!</p>
 <app-generic-menu [menuItems]="menuItems"></app-generic-menu>
-<generic-table [theTable]="tableConfig" (output)="getModal($event)"  ></generic-table>
 <p-dialog
     header="{{EditAdd()}}"
     [(visible)]="displayMaximizable"
@@ -19,3 +18,7 @@
     {{ successMessage }}
     </div> -->
 </p-dialog>
+
+<generic-table [theTable]="tableConfig" (output)="getModal($event)"  ></generic-table>
+
+<full-calendar-app [eventsMain]="genericFullCalendar"></full-calendar-app>

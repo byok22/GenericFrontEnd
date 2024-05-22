@@ -17,12 +17,16 @@ import { PrimengModule } from '../../shared/modules/primeng.module';
 import { GenericFormComponent } from '../../shared/components/generic-form/generic-form.component';
 import { GenericFormConcretBuilder } from '../../shared/components/generic-form/builder/generic-form-concret-builder';
 import { FormBuilder } from '@angular/forms';
+import { FullCalendarComponent } from '../../shared/components/full-calendar/full-calendar.component';
+import { GenericFullCalendarConcretBuilder } from '../../shared/components/full-calendar/builder/generic-fullcalendar-concret-builder';
+import { FullCalendarInterface } from '../../shared/components/full-calendar/fullcalendar.interface';
 
 @Component({
   selector: 'app-master-page',
   standalone: true,
   imports: [
     CommonModule,RouterOutlet, GenericTableComponent, GenericMenuComponent, SelectDropdownComponent, PrimengModule, GenericFormComponent
+    ,FullCalendarComponent
   ],
   templateUrl: './master-page.component.html',
   styleUrl: './master-page.component.css'
@@ -61,6 +65,11 @@ export class MasterPageComponent implements OnInit  {
     editAdd: '',
     data:this.dataTest()
   };
+
+  //FullCalendar
+  genericFullCalendar: FullCalendarInterface = {
+    events:[]
+  };
    
  // columnFields?: string[] ;
   constructor(private serviceTable: TableBuilderFactoryService,
@@ -73,6 +82,7 @@ export class MasterPageComponent implements OnInit  {
   ngOnInit(): void{
     this.ConfigTable();
     this.ConfigMenu();
+    this.configCalendar();
    // this.ConfigForm();
     
 
@@ -271,7 +281,21 @@ capitalizeFirstLetter(word: string): string {
     this.menuItems = builder.Generate();
   }
   //#endregion
-  
+  //#region  FullCalendar
+  configCalendar(): void{
+    const builder = new GenericFullCalendarConcretBuilder();
+    builder.Reset();
+    builder.SetEvent(
+      {
+        title:'Evento 3',
+        start: new Date(new Date().getTime()+86400000 * 2 ),
+        end:  new Date(new Date().getTime()+86400000 * 3 ),
+        description: "Evento 3"
+      },
+    );
+    this.genericFullCalendar = builder.Generate();
+  }
+  //#endregion
 
  
 
