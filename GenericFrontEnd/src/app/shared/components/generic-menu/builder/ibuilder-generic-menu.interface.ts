@@ -7,5 +7,5 @@ export interface IBuilderGenericMenu{
     SetCalendar(calendar: GenericMenuInterface): void;
     SetButton(button: GenericMenuInterface): void;
     SetTextBox(textBox: GenericMenuInterface): void;
-    Generate(): void;
+    Generate(): GenericMenuInterface[];
 }
