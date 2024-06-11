@@ -1,3 +1,14 @@
-<sidenav-bar></sidenav-bar>
-<body-app [body]="master.body">   
-</body-app>
+<div class="master-layout">
+    <sidenav-bar [expandWidth]="'17rem'"></sidenav-bar>
+    <!-- <body-app [body]="master.body">   
+    </body-app> -->
+    <div class="master-layout-rigth-section">
+        <!-- <ot-header></ot-header> -->
+        <!-- <app-header [compressedMode]="compressedMode"></app-header> -->
+        <div class="master-layout-rigth-section-content">
+            prueba
+          <router-outlet></router-outlet>
+        </div>
+      </div>
+
+</div>

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { BodyComponent } from '../../core/master-page/components/body/body.component';
@@ -23,13 +23,19 @@ import { TableBuilderFactoryService } from '../../shared/components/generic-tabl
 import { BasicKpi } from '../../shared/interfaces/basic-kpi.interface';
 import { SelectOption } from '../../shared/interfaces/select-option.interface';
 import { TestInterface } from '../../shared/interfaces/testInterface.interface';
+import { PruebaService } from '../service/prueba.service';
+import { firstValueFrom } from 'rxjs';
+import { GenericTitleComponent } from '../../shared/components/generic-title/generic-title.component';
 
 @Component({
   selector: 'app-pagina-pruebas',
   standalone: true,
   imports: [
     CommonModule,RouterOutlet, GenericTableComponent, GenericMenuComponent, SelectDropdownComponent, PrimengModule, GenericFormComponent
-    , BodyComponent, FullCalendarComponent
+    , BodyComponent, FullCalendarComponent, GenericTitleComponent
+  ],
+  providers:[
+    DatePipe
   ],
   templateUrl: './pagina-pruebas.component.html',
   styleUrl: './pagina-pruebas.component.css',
@@ -75,6 +81,10 @@ export class PaginaPruebasComponent implements OnInit  {
 
   //Table
   tableConfig!: GenericTableConfig<TestInterface>;
+  dataTable:TestInterface[]=[];
+  hideTable = signal(true);
+  builderTable = this.serviceTable.createBuilder<TestInterface>();
+  public newTable = signal(true);
    
   //Menu
   menuItems: GenericMenuInterface[] = [];  
@@ -93,8 +103,11 @@ export class PaginaPruebasComponent implements OnInit  {
   };
    
  // columnFields?: string[] ;
-  constructor(private serviceTable: TableBuilderFactoryService,
-    private fb: FormBuilder
+  constructor(
+    private serviceTable: TableBuilderFactoryService,
+    private fb: FormBuilder,
+    private testService: PruebaService,
+    private datePipe: DatePipe
   ) {
   
     
@@ -185,22 +198,23 @@ export class PaginaPruebasComponent implements OnInit  {
   //#endregion
 
   //#region Config Table
-  ConfigTable():void{
-    const builder = this.serviceTable.createBuilder<TestInterface>();
-    builder.Reset();
-    builder.SetTitle("Custom Table");
-    builder.SetDataKey("customId");
-    builder.SetData(this.GetData());
-    builder.SetKpis(this.GetKpis());
-    builder.SetPagination(true);
-    builder.SetRowsPerPage(10);
-    builder.SetRowsPerPageOptions([5, 10, 20]);
-    builder.SetColumns(this.getColumns());
-    builder.SetGlobalFilterFields(["name", "age"]);
-    //builder.SetGroupBy("category");
-   // builder.Generate();
+  async ConfigTable():Promise<void>{
+    const data = await this.GetData()
+   
+    this.builderTable.Reset();
+    this.builderTable.SetTitle("Custom Table");
+    this.builderTable.SetDataKey("customId");
+    this.builderTable.SetData(data);
+    this.builderTable.SetKpis(this.GetKpis());
+    this.builderTable.SetPagination(true);
+    this.builderTable.SetRowsPerPage(10);
+    this.builderTable.SetRowsPerPageOptions([5, 10, 20]);
+    this.builderTable.SetColumns(await this.getColumns());
+    this.builderTable.SetGlobalFilterFields(["name", "age"]);
+    //this.builderTable.SetGroupBy("category");
+   // this.builderTable.Generate();
 
-    this.tableConfig = builder.Generate();
+    this.tableConfig = this.builderTable.Generate();
 
   }
   getModal(item: TestInterface = {} as TestInterface) {
@@ -233,12 +247,18 @@ export class PaginaPruebasComponent implements OnInit  {
     this.ConfigForm();
   }
 
-  GetData(): TestInterface[] {
-    return [
-      { id: 1, name: 'John', age: 30 },
-      { id: 2, name: 'Alice', age: 25 },
-      { id: 3, name: 'Bob', age: 35 }
-    ];
+  async GetData(): Promise<TestInterface[]> {
+
+
+    try {
+      const dataTestRequest = await firstValueFrom(this.testService.getPruebas());
+     
+      return dataTestRequest;
+    } catch (error) {
+      console.error('Error fetching data', error);
+      throw error;
+    }     
+   
   }
   GetKpis(): BasicKpi[] {
     return   [
@@ -246,16 +266,24 @@ export class PaginaPruebasComponent implements OnInit  {
       { title :"Test2",  total:"102"}
     ];
   }
-  getColumns(): TableColumn[] {
-    const columnFields = Object.keys(this.GetData()[0]);
-    const columnNames: string[] = columnFields.map(this.capitalizeFirstLetter);
+  async getColumns(): Promise<TableColumn[]> {
+    const data = this.dataTable;
+    const columnFields = Object.keys(data[0]);
+    const columnNames = columnFields.map(this.capitalizeFirstLetter);
 
-    return columnFields.map((element, index)=>{           
-      return {
-        field : columnFields[index],
+    let columns: TableColumn[] = columnFields.map((field, index) => ({
+        field,
         header: columnNames[index]
-      };    
-  });
+    }));
+
+    const fieldsToHide = ["id", "active", "start", "tentativeEnd", "LastUpdatedBy", "LastUpdatedMessage", "end"];
+    
+    columns = columns.map(column => ({
+        ...column,
+        showHeader: !fieldsToHide.includes(column.field)
+    }));
+
+    return columns;
 }
 capitalizeFirstLetter(word: string): string {
   if (!word) return word;
@@ -272,7 +300,9 @@ capitalizeFirstLetter(word: string): string {
     builder.SetDropDown({
       item: { 
         selectedOption: selectedOption,
-        options: building, onChange: (event:any) => { /* handle change */ } 
+        options: building, onChange: (event:any) => { 
+          this.hideTable.set(true);
+          /* handle change */ } 
       },
       labelText: 'Buildings',
       order: 1,

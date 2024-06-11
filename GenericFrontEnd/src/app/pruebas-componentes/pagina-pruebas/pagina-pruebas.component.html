@@ -1,5 +1,7 @@
+<div class="customs-card">
+    <app-generic-menu [menuItems]="menuItems"></app-generic-menu>
+</div>
 
-<app-generic-menu [menuItems]="menuItems"></app-generic-menu>
 <p-dialog
     header="{{EditAdd()}}"
     [(visible)]="displayMaximizable"
@@ -19,6 +21,9 @@
     </div> -->
 </p-dialog>
 
-<generic-table [theTable]="tableConfig" (output)="getModal($event)"  ></generic-table>
+<shared-generic-title  [title]="'prueba'" ></shared-generic-title>
+<generic-table *ngIf="hideTable()==false" [theTable]="tableConfig" (output)="getModal($event)"  ></generic-table> 
+
+
 
 <full-calendar-app [eventsMain]="genericFullCalendar"></full-calendar-app>

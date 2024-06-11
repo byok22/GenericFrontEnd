@@ -11,3 +11,19 @@
 .success{
     color: green;
 }
+
+.inputGeneric{
+    width: 100% !important;
+    border-radius: 4px;
+    border: 1px solid #cccccc;
+    font-size: 16px;
+    padding: 10px 15px;
+    background-color: white;
+  }
+  
+  .labelsGeneric{
+    margin-top: 6px !important;
+    margin-left: 4px;
+    margin-bottom: 4px;
+    display: block;
+  }

@@ -19,6 +19,7 @@
                         <input #searchInput pInputText type="text" (input)="table.filterGlobal(searchInput.value, 'contains')" placeholder="Search keyword" />
                         <button type="button" pButton icon="pi pi-filter-slash" (click)="clear(table,searchInput)" class="ml-1 px-4 py-1 custom-button" style="color: rgb(255, 255, 255)" pTooltip="CSV" tooltipPosition="bottom"></button>
                         <button type="button" pButton icon="pi pi-download" (click)="exportToCSV()" class="ml-1 px-4 py-1 custom-button" pTooltip="CSV" tooltipPosition="bottom"></button>
+                        <!-- Muestra la opción de Agregar Un Registro -->
                         @if (showDetails) {
                             <button type="button" pButton icon="pi pi-plus" (click)="show()" class="ml-1 px-4 py-1 custom-button" pTooltip="Add" tooltipPosition="bottom"></button>
                         }                                     
@@ -40,7 +41,11 @@
         
         <ng-template pTemplate="header">
             <tr>
-                <th style="min-width:15rem" *ngFor="let col of theTable.columns">
+                <th 
+                    style="min-width:15rem" *ngFor="let col of theTable.columns"
+                    [class]="col.showHeader!=null&&!col.showHeader ? 'ui-table-hide-on-sm' : '' "
+                    
+                >
                     <div class="flex align-items-center">
                     {{ col.header }}
                     <p-columnFilter type="text" [field]="col.field" [display]="col.header" />
@@ -50,9 +55,21 @@
         </ng-template>
         <ng-template pTemplate="body" let-rowData >
             <tr>
-                <td *ngFor="let col of theTable.columns">
+                @for (col of  theTable.columns; track $index ) {
+                    <td                     
+                    [class]="col.showHeader!=null&&!col.showHeader ? 'ui-table-hide-on-sm' : '' "
+                
+                    >   
                     {{ rowData[col.field] }}
-                </td>
+                       @if (showDetails && $index ==0) {
+                        <button class="theButton fa fa-pencil" styleClass="p-button-outlined px-2" (click)="show(rowData)"></button>
+
+                       }
+                           
+                    </td>
+
+                }
+               
             </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">

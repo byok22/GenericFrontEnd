@@ -1,7 +1,7 @@
 <form [formGroup]="customForm">
     <div class="form-group col-md-12">
-        <label class="labelsMenu" for="{{field.field}}">{{field.label}}</label>
-        <select class="form-control" [formControlName]="field.field">
+        <label class="labelsGeneric" for="{{field.field}}">{{field.label}}</label>
+        <select class="form-control inputGeneric" [formControlName]="field.field">
             <option *ngFor="let option of field.options" [value]="option.id" [selected]="option.id === field.value">{{ option.text }}</option>
         </select>
         <!-- Display error message -->

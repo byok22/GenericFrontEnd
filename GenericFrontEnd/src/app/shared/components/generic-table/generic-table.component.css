@@ -44,3 +44,11 @@
 p-dropdown{
   padding: 0.5rem;
 }
+.ui-table-hide-on-sm{
+  display: none !important;
+}
+.theButton{
+  color: #003865;
+  background-color: transparent;
+  border: 0px;
+}

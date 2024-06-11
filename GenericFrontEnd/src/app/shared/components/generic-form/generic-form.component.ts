@@ -5,6 +5,7 @@ import { DynamicCheckBoxComponent } from './forms/dynamic-check-box/dynamic-chec
 import { FormControl, FormGroup } from '@angular/forms';
 import { GenericFormInterface } from './generic-form.interface';
 import { CommonModule } from '@angular/common';
+import { DynamicDateComponent } from './forms/dynamic-date/dynamic-date.component';
 
 
 @Component({
@@ -48,7 +49,12 @@ export class GenericFormComponent<T> implements  AfterViewInit, OnInit {
     {
       name: 'checkbox',
       component: DynamicCheckBoxComponent
+    },
+    {
+      name: 'date',
+      component: DynamicDateComponent
     }
+    
   ];
 
   /*ngOnChanges(changes: SimpleChanges): void {
@@ -119,6 +125,9 @@ export class GenericFormComponent<T> implements  AfterViewInit, OnInit {
             break;
           case 'checkbox':
             dynamicComponentType = DynamicCheckBoxComponent;
+            break;
+          case 'date':
+            dynamicComponentType = DynamicDateComponent;
             break;
           default:
             console.error(`Unsupported dynamic component type: ${componentConfig.name}`);
